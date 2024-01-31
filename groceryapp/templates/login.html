@@ -1,0 +1,20 @@
+<center>
+
+    <h1>Login</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <center>
+        {{ form.as_p }}
+        </center>
+        <button type="submit">Login</button> <br />             
+        <a href="{% url 'signup' %}"> Not an User? Create an Account.</a>        
+
+        {% if user.is_authenticated %}
+        <p>You are logged in as {{user.username}}</p>
+        {% endif %}
+
+    </form>
+
+</center>
+    

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+        <a class="navbar-brand" >Ordered Items </a>
+        <button class="navbar-toggler" type="button" aria-controls="navbarNav">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div id="navbarNav">
+
+            <ul class="navbar-nav">
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">Home</a>
+                </li>
+                
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_to_order' %}">MY Orders</a>
+                </li>                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_to_cart' %}">My Cart</a>
+                </li>
+
+            </ul>
+            
+        </div>
+    </nav>
+    
+    <h1 style='text-align:center'>Your Order History</h1><br>
+   
+        <div id="orders-list"></div>
+        <p>Total Price: <span id="total-price">0.00</span></p>
+    
+        <script>
+    // Retrieve orders from local storage
+    let orders = [];
+    try {
+        orders = JSON.parse(localStorage.getItem('orders')) || [];
+    } catch (error) {
+        console.error("Error parsing orders from local storage:", error);
+        // Handle the error as needed
+    }
+
+    // Function to remove an order
+    function removeOrder(index) {
+        // Basic error handling to check if the index is within bounds
+        if (index >= 0 && index < orders.length) {
+            // Remove the order at the specified index
+            orders.splice(index, 1);
+
+            // Save the updated orders array back to local storage
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Reload the page to reflect the changes
+            location.reload();
+        } else {
+            console.error("Invalid index for removing order.");
+            // Handle the error as needed
+        }
+    }
+
+    // Display orders on the My Orders page
+    const ordersListDiv = document.getElementById('orders-list');
+    const totalPriceSpan = document.getElementById('total-price');
+
+    if (orders.length === 0) {
+        ordersListDiv.innerHTML = '<p>No orders yet.</p>';
+    } else {
+        const ordersHtml = '<ul>' +
+            orders.map((order, index) => `
+                <li>${order.product} - ${order.price}
+                    <button onclick="removeOrder(${index})">Remove</button>
+                </li>`).join('') +
+            '</ul>';
+
+        ordersListDiv.innerHTML = ordersHtml;
+
+        // Calculate total price
+        const totalPrice = orders.reduce((sum, order) => sum + order.price, 0);
+
+        // Display total price
+        totalPriceSpan.textContent = totalPrice.toFixed(2);
+    }
+</script>
+
+        
+
+
+
+</body>
+</html>

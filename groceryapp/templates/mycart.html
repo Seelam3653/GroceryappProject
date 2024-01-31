@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CART ITEMS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+        <a class="navbar-brand" >ITEMS IN CART</a>
+        <button class="navbar-toggler" type="button" aria-controls="navbarNav">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <div id="navbarNav">
+
+            <ul class="navbar-nav">
+                
+                <li class="nav-item">
+                    
+                    <li><a class="nav-link" href="{% url 'home' %}">Home</a></li>
+                    <li><a class="nav-link" href="{% url 'add_to_order' %}">MY Orders</a></li>
+                    <li><a class="nav-link" href="{% url 'add_to_cart' %}">My Cart</a></li>
+                                 
+                </li>
+              
+            </ul>
+            
+        </div>
+       
+    </nav>
+
+   <h1 class="text-center" >YOUR CART ITEMS</h1>
+
+    <div id="cart-items"></div>
+    
+    <br>
+
+    <p id="total-price">Total Price: </p>
+
+    <script>
+        // Retrieve cart items from local storage
+        var cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Display cart items dynamically on the page
+        var cartContainer = document.getElementById('cart-items');
+        var totalPriceElement = document.getElementById('total-price');
+
+        function displayCartItems() {
+            
+            cartContainer.innerHTML = "";
+
+            cartItems.forEach(function (item, index) {
+                var itemElement = document.createElement('div');
+                itemElement.innerHTML = '<p>Name: ' + item.name + '</p><p>Price: ' + item.price + '</p>';
+                
+                // Add a remove button for each item
+                var removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove Item';
+                removeButton.addEventListener('click', function() {
+                    removeItem(index);
+                });
+
+                itemElement.appendChild(removeButton);
+                cartContainer.appendChild(itemElement);
+            });
+
+            // Calculate and display the total price
+            var totalPrice = calculateTotalPrice(cartItems);
+            totalPriceElement.textContent = 'Total Price: ' + totalPrice.toFixed(2);
+        }
+
+        function calculateTotalPrice(cartItems) {
+            // Calculate the total price of all items in the cart
+            var total = 0;
+            for (var i = 0; i < cartItems.length; i++) {
+                total += cartItems[i].price;
+            }
+            return total;
+        }
+
+        function removeItem(index) {
+            // Remove the item from the cartItems array
+            cartItems.splice(index, 1);
+
+            // Save the updated cart back to local storage
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+
+            // Update the displayed cart items and total price
+            displayCartItems();
+        }
+
+        // Initial display
+        displayCartItems();
+    </script>
+    
+
+    
+</body>
+</html>
+
+   
+
